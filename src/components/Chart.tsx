@@ -5,13 +5,11 @@ import Topics from './Topics';
 import TopicClass from '../entities/Topic'
 import TopicContainer from './TopicContainer'
 import Content from '../entities/Content';
+import {getItems, setItems} from '../misc/FakeServer'
 
 import Slider from '@material-ui/core/Slider';
 
 interface IProps {
-    topics: Array<TopicClass>;
-    campaigns: Array<CampaignClass>;
-    contents: Array<ContentClass>;
 }
 
 interface IState {
@@ -25,11 +23,22 @@ export default class Chart extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
         this.state = {
-            topics: props.topics,
-            campaigns: props.campaigns,
-            contents: props.contents,
-            zoomLevel: 50
+            topics: [],
+            campaigns: [],
+            contents: [],
+            zoomLevel: 7
         };
+    }
+
+    componentDidMount() {
+        //getItems() is a simulated Backend Access
+        getItems().then(response => {
+            this.setState({
+                topics: response.topics,
+                campaigns: response.campaigns,
+                contents: response.contents
+            });
+        });
     }
 
     /**
@@ -38,8 +47,13 @@ export default class Chart extends Component<IProps, IState> {
      */
     getContentsWithTopic = (topic?: TopicClass) : Content[] => {
         const {campaigns, contents} = this.state;
-        let filteredCampaigns = campaigns.filter(campaign => campaign.topic === topic);
-        return contents.filter(content => content.campaign ? filteredCampaigns.includes(content.campaign) : false);
+        let filteredCampaigns: Array<CampaignClass>
+        if (topic) {
+            filteredCampaigns = campaigns.filter((campaign: CampaignClass) => campaign.topics && campaign.topics.some((topic2: TopicClass) => topic2.id === topic.id));
+        } else {
+            filteredCampaigns = campaigns.filter(campaign => !campaign.topics);
+        }
+        return contents.filter(content => content.campaigns ? content.campaigns.some((campaign: CampaignClass) => filteredCampaigns.includes(campaign)) : (topic ? false : true));
     }
 
     /**
@@ -71,7 +85,7 @@ export default class Chart extends Component<IProps, IState> {
             backgroundColor: '#e4e4e4',
             width: `${timespan}px`,
             height: '100%',
-            marginLeft: '55px'
+            marginLeft: '75px'
         };
     }
 
@@ -111,6 +125,8 @@ export default class Chart extends Component<IProps, IState> {
                 })
             })
         }
+        const {topics, campaigns, contents} = this.state;
+        setItems({topics, campaigns, contents});
     }
 
     /**
@@ -134,11 +150,11 @@ export default class Chart extends Component<IProps, IState> {
                     <div style={this.getTimelineStyle()}>
                         {/* TopicContainers include everything (campaigns/ contents) belonging to the corresponding topic. They get rendered inside the Component */}
                         {this.state.topics.map((topic: TopicClass, index: number) => (
-                             <TopicContainer key={index} campaigns={campaigns.filter(campaign => campaign.topic === topic)} contents={this.getContentsWithTopic(topic)} timeInfo={[timespanDay,earliest]} updateElem={this.updateElem}/>
+                             <TopicContainer key={index} campaigns={campaigns.filter(campaign => campaign.topics && campaign.topics.some((topic2: TopicClass) => topic2.id === topic.id))} contents={this.getContentsWithTopic(topic)} timeInfo={[timespanDay,earliest]} updateElem={this.updateElem}/>
                         ))}
                         {
                             // default TopicContainter, that has every campaign / content without a topic
-                            <TopicContainer key={-1} campaigns={campaigns.filter(campaign => campaign.topic === undefined)} contents={this.getContentsWithTopic()}  timeInfo={[timespanDay,earliest]} updateElem={this.updateElem}/>
+                            <TopicContainer key={-1} campaigns={campaigns.filter(campaign => campaign.topics === undefined)} contents={this.getContentsWithTopic()}  timeInfo={[timespanDay,earliest]} updateElem={this.updateElem}/>
                         }
                     </div>
                 </div>
@@ -158,5 +174,6 @@ const topicStyle: CSSProperties = {
     left: '0',
     height: 'inherit',
     background: '#ffffff',
-    zIndex: 2
+    zIndex: 2,
+    width: '75px'
 }

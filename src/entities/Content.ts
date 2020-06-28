@@ -5,11 +5,11 @@ interface Content {
     id: string;
     title: string;
     publishDate: Date;
-    campaign?: Campaign;
+    campaigns?: Array<Campaign>;
 }
 
 class Content implements Content{
-    constructor(title: string, publishDate: number | Date, campaign?: Campaign) {
+    constructor(title: string, publishDate: number | Date, campaigns?: Array<Campaign>) {
         this.id = uuid();
         this.title = title;
         if (typeof publishDate === "number") {
@@ -17,7 +17,7 @@ class Content implements Content{
         } else {
             this.publishDate = publishDate;
         }
-        this.campaign = campaign;
+        this.campaigns = campaigns;
     }
 }
 

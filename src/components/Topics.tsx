@@ -11,18 +11,21 @@ interface IProps {
 }
 
 export default function Topics({topics, campaigns, contents}: IProps) {
+    const itemsDef = campaigns.filter(campaign => campaign.topics === undefined).length + contents().length;
+    let defaultTopic = null;
+    if (itemsDef > 0) {
+        defaultTopic = <Topic  key={-1} topic={new TopicClass('Default Topic')} numItems={itemsDef} />
+    }
     return (
         <div>
-            {topics.map((topic: TopicClass, index: number) => (
-                <Topic  key={index}
+            {topics.map((topic: TopicClass,) => (
+                <Topic  key={topic.id}
                         topic={topic}
-                        numItems={campaigns.filter(campaign => campaign.topic === topic).length
+                        numItems={campaigns.filter(campaign => campaign.topics && campaign.topics.some((topic2: TopicClass) => topic2.id === topic.id)).length
                                     + contents(topic).length}
                 />
             ))}
-            <Topic  key={-1}
-                    topic={new TopicClass('Default Topic')}
-                    numItems={campaigns.filter(campaign => campaign.topic === undefined).length + contents().length} />
+            {defaultTopic}
         </div>
     )
 }

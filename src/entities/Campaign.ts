@@ -7,11 +7,11 @@ interface Campaign {
     color: string;
     startDate: Date;
     endDate: Date;
-    topic?: Topic;
+    topics?: Array<Topic>;
 }
 
 class Campaign implements Campaign {
-    constructor(title: string, color: string, startDate: number | Date, endDate: number | Date, topic?: Topic) {
+    constructor(title: string, color: string, startDate: number | Date, endDate: number | Date, topics?: Array<Topic>) {
         this.id = uuid();
         this.title = title;
         this.color = color;
@@ -25,7 +25,7 @@ class Campaign implements Campaign {
         } else {
             this.endDate = endDate;
         }
-        if (topic) {this.topic = topic};
+        if (topics) {this.topics = topics};
     }
 }
 

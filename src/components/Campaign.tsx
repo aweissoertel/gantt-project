@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import CampaignClass from '../entities/Campaign'
 import ContentClass from '../entities/Content';
 import '../App.css';
-import Draggable, { DraggableData, DraggableEventHandler } from 'react-draggable';
+import Draggable, { DraggableData, DraggableEventHandler, ControlPosition } from 'react-draggable';
 import {v4 as uuid} from 'uuid';
 
 import Card from '@material-ui/core/Card';
@@ -16,7 +16,8 @@ interface IProps {
 }
 
 interface IState {
-    key: string
+    key: string,
+    position: ControlPosition | undefined
 }
 
 export default class Campaign extends Component<IProps, IState> {
@@ -26,7 +27,8 @@ export default class Campaign extends Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
         this.state = {
-            key: uuid()
+            key: uuid(),
+            position: {x: 0, y:0}
         };
         this.myRef = React.createRef();
         this.campaign = props.campaign;
@@ -40,8 +42,16 @@ export default class Campaign extends Component<IProps, IState> {
         str = str.split('matrix(1, 0, 0, 1, ')[1];
         str = str.split(',')[0];
         // resetting the key forces a reset of <Draggable>, which resets its offset (i want to start from scratch after the new time period is set)
-        this.setState({key: uuid()});
+        //this.setState({key: uuid()});
+        //probably the better solution, keeping the old one here however
+        this.setState({position: {x: 0, y:0}});
         this.props.updateElem(this.props.campaign, Number(str));
+    }
+
+    drag: DraggableEventHandler = (e: any, data: DraggableData): void => {
+        this.setState({
+            position: undefined
+        });
     }
 
     render() {
@@ -53,7 +63,7 @@ export default class Campaign extends Component<IProps, IState> {
         const startEnd: [string, string] = [campaign.startDate.toLocaleDateString(), campaign.endDate.toLocaleDateString()];
 
         return (
-            <Draggable axis="x" onStop={this.dropped.bind(this)} grid={[dayLength,0]} nodeRef={this.myRef} key={this.state.key}>
+            <Draggable axis="x" onStart={this.drag} onStop={this.dropped} grid={[dayLength,0]} nodeRef={this.myRef} key={this.state.key} position={this.state.position}>
                 <div style={{position: "absolute", left: translate+'px', width: campaignLength+'px', maxHeight: 'inherit'}}  ref={this.myRef}>
                     <Card style={{height:'100%', width:'100%', maxHeight: 'inherit', overflowY: 'auto'}} className={"scrollBar"}>
                         <CardHeader
