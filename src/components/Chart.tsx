@@ -67,7 +67,6 @@ export default class Chart extends Component<IProps, IState> {
     getTimelineStyle = () : CSSProperties => {
         let [,,timespan] = this.getMaxTimespan();
         timespan = (timespan/20000) * (this.state.zoomLevel/100);
-        console.log(timespan);
         return {
             backgroundColor: '#e4e4e4',
             width: `${timespan}px`,
@@ -78,6 +77,48 @@ export default class Chart extends Component<IProps, IState> {
 
     handleZoom = (event: any, newValue: number | number[]) => {
         this.setState({zoomLevel: newValue as number});
+    }
+
+    /**
+     * Function that updates the time properties of the given element (campaign/content) so that they match the offset
+     * @param elem Element to update: CampaignClass | ContentClass
+     * @param val Offset in pixels
+     */
+    updateElem = (elem: CampaignClass | ContentClass, val: number) => {
+        const timespanDay = 43.2 * this.state.zoomLevel;
+        const delta = (val/timespanDay) * 1000*60*60*24;
+        //set publish/start Date to += delta
+        if (this.isCampaign(elem)) {
+            const oldStart = elem.startDate.getTime();
+            const oldEnd = elem.endDate.getTime();
+            this.setState({
+                campaigns: this.state.campaigns.map((campaign: CampaignClass) => {
+                    if (campaign.id === elem.id) {
+                        campaign.startDate = new Date(oldStart+delta);
+                        campaign.endDate = new Date(oldEnd+delta);
+                    }
+                    return campaign;
+                })
+            });
+        } else {
+            const publish = elem.publishDate.getTime();
+            this.setState({
+                contents: this.state.contents.map((content: ContentClass) => {
+                    if (content.id === elem.id) {
+                        content.publishDate = new Date(publish+delta);
+                    }
+                    return content;
+                })
+            })
+        }
+    }
+
+    /**
+     * Helper function to determine if Element is Type Campaign or Content
+     * @param elem Element to check
+     */
+    isCampaign(elem: CampaignClass | ContentClass): elem is CampaignClass {
+        return (elem as CampaignClass).startDate !== undefined;
     }
 
     render() {
@@ -93,11 +134,11 @@ export default class Chart extends Component<IProps, IState> {
                     <div style={this.getTimelineStyle()}>
                         {/* TopicContainers include everything (campaigns/ contents) belonging to the corresponding topic. They get rendered inside the Component */}
                         {this.state.topics.map((topic: TopicClass, index: number) => (
-                             <TopicContainer key={index} campaigns={campaigns.filter(campaign => campaign.topic === topic)} contents={this.getContentsWithTopic(topic)} timeInfo={[timespanDay,earliest]}/>
+                             <TopicContainer key={index} campaigns={campaigns.filter(campaign => campaign.topic === topic)} contents={this.getContentsWithTopic(topic)} timeInfo={[timespanDay,earliest]} updateElem={this.updateElem}/>
                         ))}
                         {
                             // default TopicContainter, that has every campaign / content without a topic
-                            <TopicContainer key={-1} campaigns={campaigns.filter(campaign => campaign.topic === undefined)} contents={this.getContentsWithTopic()}  timeInfo={[timespanDay,earliest]}/>
+                            <TopicContainer key={-1} campaigns={campaigns.filter(campaign => campaign.topic === undefined)} contents={this.getContentsWithTopic()}  timeInfo={[timespanDay,earliest]} updateElem={this.updateElem}/>
                         }
                     </div>
                 </div>

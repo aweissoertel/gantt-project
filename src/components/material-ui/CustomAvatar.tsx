@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 
@@ -22,30 +22,31 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IProps {
-    size: string,
+    size?: string,
+    style?: CSSProperties,
     children: Object
 }
 
-export default function CustomAvatar({size, children}: IProps) {
+export default function CustomAvatar({size, style, children}: IProps) {
   const classes = useStyles();
 
   if (size === 'small') {
       return (
-        <Avatar className={classes.small} >
+        <Avatar style={style} className={classes.small} >
             {children}
         </Avatar>
       );
   }
   else if (size === 'large') {
       return (
-        <Avatar className={classes.large} >
+        <Avatar style={style} className={classes.large} >
             {children}
         </Avatar>
       );
   }
   else {
       return (
-        <Avatar>
+        <Avatar style={style}>
             {children}
         </Avatar>
       );

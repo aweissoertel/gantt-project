@@ -1,6 +1,8 @@
 import Topic from './Topic';
+import {v4 as uuid} from 'uuid';
 
 interface Campaign {
+    id: string;
     title: string;
     color: string;
     startDate: Date;
@@ -10,6 +12,7 @@ interface Campaign {
 
 class Campaign implements Campaign {
     constructor(title: string, color: string, startDate: number | Date, endDate: number | Date, topic?: Topic) {
+        this.id = uuid();
         this.title = title;
         this.color = color;
         if (typeof startDate === "number") {

@@ -8,7 +8,8 @@ import { Divider } from '@material-ui/core';
 interface IProps {
     campaigns: Array<CampaignClass>,
     contents: Array<ContentClass>,
-    timeInfo: number[]
+    timeInfo: number[],
+    updateElem: (elem: CampaignClass | ContentClass, val: number) => void
 }
 
 export default class TopicContainer extends Component<IProps, {}> {
@@ -23,20 +24,22 @@ export default class TopicContainer extends Component<IProps, {}> {
         return (
             <div>
             <table style={{width: 100+'%'}}>
-                {campaigns.map((campaign, index) => (
-                    <tr style={{height: '75px'}}>
+                <tbody>
+                {campaigns.map((campaign) => (
+                    <tr style={{height: '75px'}}  key={campaign.id}>
                         <td style={{width: 100+'%', position: 'relative', verticalAlign: 'top', maxHeight: '75px'}}>
-                            <Campaign key={index} campaign={campaign} timeInfo={this.props.timeInfo}/>
+                            <Campaign updateElem={this.props.updateElem} campaign={campaign} timeInfo={this.props.timeInfo}/>
                         </td>
                     </tr>
                 ))}
-                {contents.map((content, index) => (
-                    <tr style={{height: '75px'}}>
+                {contents.map((content) => (
+                    <tr style={{height: '75px'}} key={content.id}>
                         <td style={{width: 100+'%', position: 'relative', verticalAlign: 'top', maxHeight: '75px'}}>
-                            <Content key={index} content={content} timeInfo={this.props.timeInfo}/>
+                            <Content updateElem={this.props.updateElem} content={content} timeInfo={this.props.timeInfo}/>
                         </td>
                     </tr>
                 ))}
+                </tbody>
             </table>
 
             <Divider variant={'fullWidth'}/>

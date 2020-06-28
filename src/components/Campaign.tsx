@@ -1,33 +1,73 @@
-import React from 'react'
+import React, { Component } from 'react'
 import CampaignClass from '../entities/Campaign'
+import ContentClass from '../entities/Content';
 import '../App.css';
+import Draggable, { DraggableData, DraggableEventHandler } from 'react-draggable';
+import {v4 as uuid} from 'uuid';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import Avatar from '@material-ui/core/Avatar';
+import CustomAvatar from './material-ui/CustomAvatar';
 
 interface IProps {
     campaign: CampaignClass,
-    timeInfo: number[]
+    timeInfo: number[],
+    updateElem: (elem: CampaignClass | ContentClass, val: number) => void
 }
 
-export default function Campaign({campaign, timeInfo: [dayLength,firstEvent]}: IProps) {
-    const translate: number = ((campaign.startDate.getTime() - firstEvent) / (1000*60*60*24)) * dayLength;
-    const campaignLength: number = ((campaign.endDate.getTime() - campaign.startDate.getTime()) / (1000*60*60*24) +1) * dayLength;
-    const startEnd: [string, string] = [campaign.startDate.toLocaleDateString(), campaign.endDate.toLocaleDateString()];
-    return (
-        <div style={{position: "absolute", left: translate+'px', width: campaignLength+'px', maxHeight: 'inherit'}}>
-            <Card style={{height:'100%', width:'100%', maxHeight: 'inherit', overflowY: 'auto'}} className={"scrollBar"}>
-                <CardHeader
-                    avatar={
-                        <Avatar style={{backgroundColor: campaign.color}} >
-                            {campaign.title.charAt(0)}
-                        </Avatar>
-                    }
-                    title={campaign.title}
-                    subheader={startEnd[0] + ' - \n' + startEnd[1]}
-                />
-            </Card>
-        </div>
-    )
+interface IState {
+    key: string
+}
+
+export default class Campaign extends Component<IProps, IState> {
+    myRef: any;
+    campaign: CampaignClass;
+
+    constructor(props: IProps) {
+        super(props);
+        this.state = {
+            key: uuid()
+        };
+        this.myRef = React.createRef();
+        this.campaign = props.campaign;
+    }
+
+    dropped: DraggableEventHandler = (e: any, data: DraggableData): void => {
+        const style = getComputedStyle(this.myRef.current);
+        //getPropertyValue returns a string 🤬, looks like this: "matrix(1, 0, 0, 1, X, 0)"
+        let str = style.getPropertyValue('transform');
+        //i only want the X
+        str = str.split('matrix(1, 0, 0, 1, ')[1];
+        str = str.split(',')[0];
+        // resetting the key forces a reset of <Draggable>, which resets its offset (i want to start from scratch after the new time period is set)
+        this.setState({key: uuid()});
+        this.props.updateElem(this.props.campaign, Number(str));
+    }
+
+    render() {
+        //const nodeRef = React.useRef(null);
+        const {campaign, timeInfo} = this.props;
+        const [dayLength, firstEvent] = timeInfo;
+        const translate: number = ((campaign.startDate.getTime() - firstEvent) / (1000*60*60*24)) * dayLength;
+        const campaignLength: number = ((campaign.endDate.getTime() - campaign.startDate.getTime()) / (1000*60*60*24) +1) * dayLength;
+        const startEnd: [string, string] = [campaign.startDate.toLocaleDateString(), campaign.endDate.toLocaleDateString()];
+
+        return (
+            <Draggable axis="x" onStop={this.dropped.bind(this)} grid={[dayLength,0]} nodeRef={this.myRef} key={this.state.key}>
+                <div style={{position: "absolute", left: translate+'px', width: campaignLength+'px', maxHeight: 'inherit'}}  ref={this.myRef}>
+                    <Card style={{height:'100%', width:'100%', maxHeight: 'inherit', overflowY: 'auto'}} className={"scrollBar"}>
+                        <CardHeader
+                            avatar={
+                                <CustomAvatar style={{backgroundColor: campaign.color}} >
+                                    {campaign.title.charAt(0)}
+                                </CustomAvatar>
+                            }
+                            title={campaign.title}
+                            subheader={startEnd[0] + ' - \n' + startEnd[1]}
+                        />
+                    </Card>
+                </div>
+            </Draggable>
+        )
+    }
 }
