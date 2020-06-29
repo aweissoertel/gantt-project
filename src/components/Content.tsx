@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, CSSProperties } from 'react'
 import ContentClass from '../entities/Content'
 import CampaignClass from '../entities/Campaign'
 import '../App.css';
@@ -22,7 +22,7 @@ interface IState {
 }
 
 export default class Content extends Component<IProps, IState> {
-    myRef: any;
+    myRef: any; // necessary for the Draggable component
     content: ContentClass;
 
     constructor(props: IProps) {
@@ -35,6 +35,11 @@ export default class Content extends Component<IProps, IState> {
         this.content = props.content;
     }
 
+    /**
+     * Callback function for when content gets dropped.
+     * The offset gets fetched somewhat laborious bc the draggable stuff doesn't work
+     * Then the computed offset gets reset and the passed updateElem function gets called to update this content
+     */
     dropped: DraggableEventHandler = (e: any, data: DraggableData): void => {
         const style = getComputedStyle(this.myRef.current);
         //getPropertyValue returns a string 🤬, looks like this: "matrix(1, 0, 0, 1, X, 0)"
@@ -49,10 +54,13 @@ export default class Content extends Component<IProps, IState> {
         this.setState({position: {x: 0, y:0}});
     }
 
-    drag: DraggableEventHandler = (e: any, data: DraggableData): void => {
-        this.setState({
-            position: undefined
-        });
+    getContainerStyle(translate: number, length: number): CSSProperties {
+        return {
+            left: translate+'px',
+            width: length+'px',
+            position: 'absolute',
+            maxHeight: 'inherit'
+        }
     }
     
     render() {
@@ -61,9 +69,9 @@ export default class Content extends Component<IProps, IState> {
         const translate = ((content.publishDate.getTime() - firstEvent) / (1000*60*60*24)) * dayLength;
 
         return (
-            <Draggable axis="x" onStart={this.drag} onStop={this.dropped} grid={[dayLength/(24*60),0]} nodeRef={this.myRef} key={this.state.key} position={this.state.position}>
-                <div style={{width: dayLength+'px', position: "absolute", left: translate+'px', maxHeight: 'inherit'}} ref={this.myRef}>
-                    <Card style={{height:'100%', width:'100%', maxHeight: 'inherit', overflowY: 'auto'}} className={"scrollBar"}>
+            <Draggable axis="x" onStop={this.dropped} grid={[dayLength/(24*60),0]} nodeRef={this.myRef} key={this.state.key} position={this.state.position}>
+                <div style={this.getContainerStyle(translate,dayLength)} ref={this.myRef}>
+                    <Card className={"scrollBar cardStyle"}>
                         <CardHeader
                             avatar={
                                 <CustomAvatar size={'small'}>

@@ -4,6 +4,7 @@ import ContentClass from '../entities/Content'
 import Campaign from './Campaign'
 import Content from './Content';
 import { Divider } from '@material-ui/core';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 
 interface IProps {
     campaigns: Array<CampaignClass>,
@@ -13,37 +14,46 @@ interface IProps {
 }
 
 export default class TopicContainer extends Component<IProps, {}> {
-    containerHeight(): number {
-        // some value that needs to be calculated based on the max number of stacked items
-        const calculationDummy = 160;
-        return Math.max(150,calculationDummy);
-    }
-
     render() {
         const {campaigns, contents} = this.props;
         return (
             <div>
-            <table style={{width: 100+'%'}}>
-                <tbody>
-                {campaigns.map((campaign) => (
-                    <tr style={{height: '75px'}}  key={campaign.id}>
-                        <td style={{width: 100+'%', position: 'relative', verticalAlign: 'top', maxHeight: '75px'}}>
-                            <Campaign updateElem={this.props.updateElem} campaign={campaign} timeInfo={this.props.timeInfo}/>
-                        </td>
-                    </tr>
-                ))}
-                {contents.map((content) => (
-                    <tr style={{height: '75px'}} key={content.id}>
-                        <td style={{width: 100+'%', position: 'relative', verticalAlign: 'top', maxHeight: '75px'}}>
-                            <Content updateElem={this.props.updateElem} content={content} timeInfo={this.props.timeInfo}/>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+                <table style={tableStyle}>
+                    <tbody>
+                    {campaigns.map((campaign) => (
+                        <tr style={rowStyle}  key={campaign.id}>
+                            <td style={cellStyle}>
+                                <Campaign updateElem={this.props.updateElem} campaign={campaign} timeInfo={this.props.timeInfo}/>
+                            </td>
+                        </tr>
+                    ))}
+                    {contents.map((content) => (
+                        <tr style={rowStyle} key={content.id}>
+                            <td style={cellStyle}>
+                                <Content updateElem={this.props.updateElem} content={content} timeInfo={this.props.timeInfo}/>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
 
-            <Divider variant={'fullWidth'}/>
+                <Divider variant={'fullWidth'}/>
             </div>
         )
     }
+}
+
+const tableStyle: CSSProperties = {
+    width: '100%'
+}
+
+const rowStyle: CSSProperties = {
+    height: '75px'
+}
+
+const cellStyle: CSSProperties = {
+    width: '100%',
+    position: 'relative',
+    verticalAlign: 'top',
+    maxHeight: '75px'
 }

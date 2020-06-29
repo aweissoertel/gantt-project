@@ -53,6 +53,7 @@ export default class Chart extends Component<IProps, IState> {
         } else {
             filteredCampaigns = campaigns.filter(campaign => !campaign.topics);
         }
+        // so this line kind of escalated, but the idea is that we filter out the contents that don't have a campaign with the given topic or else if we are looking at the default topic, just return every content that is not in any campaign
         return contents.filter(content => content.campaigns ? content.campaigns.some((campaign: CampaignClass) => filteredCampaigns.includes(campaign)) : (topic ? false : true));
     }
 
@@ -78,6 +79,9 @@ export default class Chart extends Component<IProps, IState> {
         return [earliest,latest+1000*60*60*24,latest+1000*60*60*24-earliest];
     }
 
+    /**
+     * Helper function that sets the style of the timeline (including width in dependent on zoomlevel)
+     */
     getTimelineStyle = () : CSSProperties => {
         let [,,timespan] = this.getMaxTimespan();
         timespan = (timespan/20000) * (this.state.zoomLevel/100);
@@ -89,6 +93,11 @@ export default class Chart extends Component<IProps, IState> {
         };
     }
 
+    /**
+     * Callback function for the zoom slider
+     * @param event 
+     * @param newValue 
+     */
     handleZoom = (event: any, newValue: number | number[]) => {
         this.setState({zoomLevel: newValue as number});
     }
@@ -140,7 +149,7 @@ export default class Chart extends Component<IProps, IState> {
     render() {
         const {topics, campaigns} = this.state;
         const [earliest,,] = this.getMaxTimespan();
-        let timespanDay = 43.2 * this.state.zoomLevel;
+        const timespanDay = 43.2 * this.state.zoomLevel;
         return (
             <div>
                 <div style={container}>
@@ -149,11 +158,11 @@ export default class Chart extends Component<IProps, IState> {
                     </div>
                     <div style={this.getTimelineStyle()}>
                         {/* TopicContainers include everything (campaigns/ contents) belonging to the corresponding topic. They get rendered inside the Component */}
-                        {this.state.topics.map((topic: TopicClass, index: number) => (
-                             <TopicContainer key={index} campaigns={campaigns.filter(campaign => campaign.topics && campaign.topics.some((topic2: TopicClass) => topic2.id === topic.id))} contents={this.getContentsWithTopic(topic)} timeInfo={[timespanDay,earliest]} updateElem={this.updateElem}/>
+                        {this.state.topics.map((topic: TopicClass) => (
+                             <TopicContainer key={topic.id} campaigns={campaigns.filter(campaign => campaign.topics && campaign.topics.some((topic2: TopicClass) => topic2.id === topic.id))} contents={this.getContentsWithTopic(topic)} timeInfo={[timespanDay,earliest]} updateElem={this.updateElem}/>
                         ))}
                         {
-                            // default TopicContainter, that has every campaign / content without a topic
+                            // default TopicContainer, that has every campaign / content without a topic
                             <TopicContainer key={-1} campaigns={campaigns.filter(campaign => campaign.topics === undefined)} contents={this.getContentsWithTopic()}  timeInfo={[timespanDay,earliest]} updateElem={this.updateElem}/>
                         }
                     </div>
