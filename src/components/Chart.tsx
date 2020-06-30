@@ -97,7 +97,6 @@ export default class Chart extends Component<IProps, IState> {
         return {
             backgroundColor: '#e4e4e4',
             width: `${timespan}px`,
-            height: '100%',
             marginLeft: '75px'
         };
     }
@@ -195,15 +194,14 @@ export default class Chart extends Component<IProps, IState> {
 }
 
 const container: CSSProperties = {
-    overflowX: 'scroll',
-    height: '750px'
+    overflowX: 'auto',
+    overflowY: 'hidden'
 }
 
 const topicStyle: CSSProperties = {
-    position: 'fixed',
+    position: 'sticky',
     left: '0',
-    height: 'inherit',
-    background: '#ffffff',
+    height: '0px',
     zIndex: 2,
     width: '75px'
 }

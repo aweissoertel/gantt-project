@@ -14,7 +14,7 @@ let t2 = new Topic('second Topic');
 let c1 = new Campaign('Best Campaign', 'blue', 1592179200000, 1592438400000, [t1]);
 let c2 = new Campaign('Short campaign','green', 1592611200000, 1592611200000, [t2]);
 let c3 = new Campaign('Long campaign', 'pink', 1592344800000, 1593475200000, [t2]);
-let c4 = new Campaign('Without topic','orange',1592517600000, 1592776800000)
+let c4 = new Campaign('Without topic','orange',1592517600000, 1592776800000);
 
 let co1 = new Content('beschde content', 1592194500000, [c1]);
 let co2 = new Content('Content in 2 campaigns', 1592242200000, [c1,c2]);

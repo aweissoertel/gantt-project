@@ -19,7 +19,7 @@ export default function Topics({topics, campaigns, contents}: IProps) {
         defaultTopic = <Topic  key={-1} topic={new TopicClass('Default Topic')} numItems={itemsDef} />
     }
     return (
-        <div>
+        <div style={{backgroundColor:'#ffffff'}}>
             {topics.map((topic: TopicClass) => (
                 <Topic  key={topic.id}
                         topic={topic}
