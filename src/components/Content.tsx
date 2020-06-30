@@ -76,7 +76,7 @@ export default class Content extends Component<IProps, IState> {
                                 <ContentInfo campaigns={content.campaigns as CampaignClass[]} className={"dontDrag"}/>
                             }
                             title={content.title}
-                            subheader={content.publishDate.toLocaleDateString() + ', ' + content.publishDate.toLocaleTimeString()}
+                            subheader={content.publishDate.toLocaleDateString() + ', ' + content.publishDate.getHours() + ':' + content.publishDate.getMinutes()}
                         />
                     </Card>
                 </div>
