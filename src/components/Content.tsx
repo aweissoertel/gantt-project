@@ -40,9 +40,9 @@ export default class Content extends Component<IProps, IState> {
      * Then the computed offset gets reset and the passed updateElem function gets called to update this content
      */
     dropped: DraggableEventHandler = (e: any, data: DraggableData): void => {
-        const style = getComputedStyle(this.myRef.current);
+        const style: CSSStyleDeclaration = getComputedStyle(this.myRef.current);
         //getPropertyValue returns a string 🤬, looks like this: "matrix(1, 0, 0, 1, X, 0)"
-        let str = style.getPropertyValue('transform');
+        let str: string = style.getPropertyValue('transform');
         //i only want the X
         str = str.split('matrix(1, 0, 0, 1, ')[1];
         str = str.split(',')[0];
@@ -64,8 +64,8 @@ export default class Content extends Component<IProps, IState> {
     
     render() {
         const {timeInfo: [dayLength,firstEvent]} = this.props;
-        const content = this.content;
-        const translate = ((content.publishDate.getTime() - firstEvent) / (1000*60*60*24)) * dayLength;
+        const content: ContentClass = this.content;
+        const translate: number = ((content.publishDate.getTime() - firstEvent) / (1000*60*60*24)) * dayLength;
 
         return (
             <Draggable axis="x" onStop={this.dropped} grid={[dayLength/(24*60),0]} nodeRef={this.myRef} key={this.state.key} position={this.state.position} cancel="button, .MuiPopover-root">

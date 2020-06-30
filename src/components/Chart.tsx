@@ -34,8 +34,14 @@ export default class Chart extends Component<IProps, IState> {
     }
 
     componentDidMount() {
+        interface ResponseInterface {
+            topics: Array<TopicClass>,
+            campaigns: Array<CampaignClass>,
+            contents: Array<ContentClass>
+        }
+
         //getItems() is a simulated Backend Access
-        getItems().then(response => {
+        getItems().then((response: ResponseInterface) => {
             this.setState({
                 topics: response.topics,
                 campaigns: response.campaigns,
@@ -50,7 +56,7 @@ export default class Chart extends Component<IProps, IState> {
      */
     getContentsWithTopic = (topic?: TopicClass) : Content[] => {
         const {campaigns, contents} = this.state;
-        let filteredCampaigns: Array<CampaignClass>
+        let filteredCampaigns: Array<CampaignClass>;
         if (topic) {
             filteredCampaigns = campaigns.filter((campaign: CampaignClass) => campaign.topics && campaign.topics.some((topic2: TopicClass) => topic2.id === topic.id));
         } else {
@@ -101,7 +107,7 @@ export default class Chart extends Component<IProps, IState> {
      * @param event 
      * @param newValue 
      */
-    handleZoom = (event: any, newValue: number | number[]) => {
+    handleZoom = (event: any, newValue: number | number[]): void => {
         this.setState({zoomLevel: (newValue as number)});
     }
 
@@ -110,13 +116,13 @@ export default class Chart extends Component<IProps, IState> {
      * @param elem Element to update: CampaignClass | ContentClass
      * @param val Offset in pixels
      */
-    updateElem = (elem: CampaignClass | ContentClass, val: number) => {
-        const timespanDay = 43.2 * this.state.zoomLevel;
-        const delta = (val/timespanDay) * 1000*60*60*24;
+    updateElem = (elem: CampaignClass | ContentClass, val: number): void => {
+        const timespanDay: number = 43.2 * this.state.zoomLevel;
+        const delta: number = (val/timespanDay) * 1000*60*60*24;
         //set publish/start Date to += delta
         if (this.isCampaign(elem)) {
-            const oldStart = elem.startDate.getTime();
-            const oldEnd = elem.endDate.getTime();
+            const oldStart: number = elem.startDate.getTime();
+            const oldEnd: number = elem.endDate.getTime();
             this.setState({
                 campaigns: this.state.campaigns.map((campaign: CampaignClass) => {
                     if (campaign.id === elem.id) {
@@ -138,6 +144,7 @@ export default class Chart extends Component<IProps, IState> {
             })
         }
         const {topics, campaigns, contents} = this.state;
+        // send to fakeserver
         setItems({topics, campaigns, contents});
     }
 
@@ -152,7 +159,7 @@ export default class Chart extends Component<IProps, IState> {
     render() {
         const {topics, campaigns} = this.state;
         const [earliest,,] = this.getMaxTimespan();
-        const timespanDay = 43.2 * this.state.zoomLevel;
+        const timespanDay: number = 43.2 * this.state.zoomLevel;
         return (
             <div>
                 <div style={container}>
@@ -189,7 +196,7 @@ export default class Chart extends Component<IProps, IState> {
 
 const container: CSSProperties = {
     overflowX: 'scroll',
-    height: '600px'
+    height: '750px'
 }
 
 const topicStyle: CSSProperties = {

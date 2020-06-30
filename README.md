@@ -9,7 +9,7 @@ This Gantt Chart App displays topics, campaigns and contents.
 - The info button of the contents displays the campaign(s) they belong to.
 
 All Relations (`topic` - `campaign` - `content`) are M:N. <br>
-If you want to alter the testdata, you can do so by changing the content of the `Fakeserver.ts` File. This File is used as a fake database from where the `Chart` component retrieves its data. (A local dev server can be startet with `npm run start`)
+If you want to alter the testdata, you can do so by changing the content of the `Fakeserver.ts` file. This file is used as a fake database from where the `Chart` component retrieves its data. (A local dev server can be startet with `npm run start`)
 
 ---
 
@@ -20,12 +20,12 @@ You can try a built version [here](https://alex-co.de/gantt)
 
 ## Known Issues
 #### Console Error `findDOMNode is deprecated in StrictMode`
-Material UI uses StrictMode and the deprecated findDOMNode Method in the transition used for the info popover for the contents. The contributors are working on a solution that is scheduled to be released in Version 5.0.0 of the API, but until then there is only an unstable fix available. Read more about it [here](https://github.com/mui-org/material-ui/issues/13394).
-The Warning (which is a console error) fires once.
+Material UI uses StrictMode and the deprecated `findDOMNode` method in the transition used for the info popover for the contents. The contributors are working on a solution that is scheduled to be released in Version 5.0.0 of the API, but until then there is only an unstable fix available. Read more about it [here](https://github.com/mui-org/material-ui/issues/13394).
+The warning (which is a console error) fires once.
 
 ---
 
 ## Third Party
 - This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-- Material UI Design by [Material UI](https://github.com/mui-org/material-ui)
-- Draggable Items powered by [React Draggable](https://github.com/STRML/react-draggable)
+- Material UI design by [Material UI](https://github.com/mui-org/material-ui)
+- Draggable items powered by [React Draggable](https://github.com/STRML/react-draggable)

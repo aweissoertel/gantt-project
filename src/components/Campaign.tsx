@@ -41,9 +41,9 @@ export default class Campaign extends Component<IProps, IState> {
      * Then the computed offset gets reset and the passed updateElem function gets called to update this campaign
      */
     dropped: DraggableEventHandler = (): void => {
-        const style = getComputedStyle(this.myRef.current);
+        const style: CSSStyleDeclaration = getComputedStyle(this.myRef.current);
         //getPropertyValue returns a string 🤬, looks like this: "matrix(1, 0, 0, 1, X, 0)"
-        let str = style.getPropertyValue('transform');
+        let str: string = style.getPropertyValue('transform');
         //i only want the X
         str = str.split('matrix(1, 0, 0, 1, ')[1];
         str = str.split(',')[0];

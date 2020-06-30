@@ -16,28 +16,29 @@ interface IProps {
 export default class TopicContainer extends Component<IProps, {}> {
     render() {
         const {campaigns, contents} = this.props;
+        let divider: JSX.Element = campaigns.length > 0 ? <Divider variant={'fullWidth'}/> : <></>;
+
         return (
             <div>
                 <table style={tableStyle}>
                     <tbody>
-                    {campaigns.map((campaign) => (
-                        <tr style={rowStyle}  key={campaign.id}>
-                            <td style={cellStyle}>
-                                <Campaign updateElem={this.props.updateElem} campaign={campaign} timeInfo={this.props.timeInfo}/>
-                            </td>
-                        </tr>
-                    ))}
-                    {contents.map((content) => (
-                        <tr style={rowStyle} key={content.id}>
-                            <td style={cellStyle}>
-                                <Content updateElem={this.props.updateElem} content={content} timeInfo={this.props.timeInfo}/>
-                            </td>
-                        </tr>
-                    ))}
+                        {campaigns.map((campaign) => (
+                            <tr style={rowStyle}  key={campaign.id}>
+                                <td style={cellStyle}>
+                                    <Campaign updateElem={this.props.updateElem} campaign={campaign} timeInfo={this.props.timeInfo}/>
+                                </td>
+                            </tr>
+                        ))}
+                        {contents.map((content) => (
+                            <tr style={rowStyle} key={content.id}>
+                                <td style={cellStyle}>
+                                    <Content updateElem={this.props.updateElem} content={content} timeInfo={this.props.timeInfo}/>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
-
-                <Divider variant={'fullWidth'}/>
+                {divider}
             </div>
         )
     }

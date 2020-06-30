@@ -20,10 +20,10 @@ function getTopicStyle(numItems: number) : CSSProperties {
 export default function Topic({topic: {title}, numItems}: IProps) {
     return (
         <div>
-        <div style={getTopicStyle(numItems)}>
-            {title}
-        </div>
-        <Divider variant={"fullWidth"}/>
+            <div style={getTopicStyle(numItems)}>
+                {title}
+            </div>
+            <Divider variant={"fullWidth"}/>
         </div>
     )
 }
