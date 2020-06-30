@@ -66,6 +66,10 @@ export default class Content extends Component<IProps, IState> {
         const {timeInfo: [dayLength,firstEvent]} = this.props;
         const content: ContentClass = this.content;
         const translate: number = ((content.publishDate.getTime() - firstEvent) / (1000*60*60*24)) * dayLength;
+        const hours: number = content.publishDate.getHours();
+        const minutes: number = content.publishDate.getMinutes();
+        let time: string = hours<10 ? '0'+hours.toString() : hours.toString();
+        time = minutes<10 ? time+':0'+minutes.toString() : time+':'+minutes.toString();
 
         return (
             <Draggable axis="x" onStop={this.dropped} grid={[dayLength/(24*60),0]} nodeRef={this.myRef} key={this.state.key} position={this.state.position} cancel="button, .MuiPopover-root">
@@ -76,7 +80,7 @@ export default class Content extends Component<IProps, IState> {
                                 <ContentInfo campaigns={content.campaigns as CampaignClass[]} className={"dontDrag"}/>
                             }
                             title={content.title}
-                            subheader={content.publishDate.toLocaleDateString() + ', ' + content.publishDate.getHours() + ':' + content.publishDate.getMinutes()}
+                            subheader={content.publishDate.toLocaleDateString() + ', ' + time}
                         />
                     </Card>
                 </div>
