@@ -7,8 +7,7 @@ import Draggable, { DraggableEventHandler, DraggableData, ControlPosition } from
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
-import CustomAvatar from './material-ui/CustomAvatar';
+import ContentInfo from './material-ui/ContentInfo';
 
 interface IProps {
     content: ContentClass,
@@ -69,14 +68,12 @@ export default class Content extends Component<IProps, IState> {
         const translate = ((content.publishDate.getTime() - firstEvent) / (1000*60*60*24)) * dayLength;
 
         return (
-            <Draggable axis="x" onStop={this.dropped} grid={[dayLength/(24*60),0]} nodeRef={this.myRef} key={this.state.key} position={this.state.position}>
+            <Draggable axis="x" onStop={this.dropped} grid={[dayLength/(24*60),0]} nodeRef={this.myRef} key={this.state.key} position={this.state.position} cancel="button, .MuiPopover-root">
                 <div style={this.getContainerStyle(translate,dayLength)} ref={this.myRef}>
                     <Card className={"scrollBar cardStyle"}>
                         <CardHeader
                             avatar={
-                                <CustomAvatar size={'small'}>
-                                    <AssignmentOutlinedIcon fontSize={'small'} />
-                                </CustomAvatar>
+                                <ContentInfo campaigns={content.campaigns as CampaignClass[]} className={"dontDrag"}/>
                             }
                             title={content.title}
                             subheader={content.publishDate.toLocaleDateString() + ', ' + content.publishDate.toLocaleTimeString()}

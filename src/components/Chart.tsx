@@ -8,6 +8,9 @@ import Content from '../entities/Content';
 import {getItems, setItems} from '../misc/FakeServer'
 
 import Slider from '@material-ui/core/Slider';
+import ZoomOutIcon from '@material-ui/icons/ZoomOut';
+import ZoomInIcon from '@material-ui/icons/ZoomIn';
+import { Grid } from '@material-ui/core';
 
 interface IProps {
 }
@@ -99,7 +102,7 @@ export default class Chart extends Component<IProps, IState> {
      * @param newValue 
      */
     handleZoom = (event: any, newValue: number | number[]) => {
-        this.setState({zoomLevel: newValue as number});
+        this.setState({zoomLevel: (newValue as number)});
     }
 
     /**
@@ -167,7 +170,18 @@ export default class Chart extends Component<IProps, IState> {
                         }
                     </div>
                 </div>
-                <Slider value={this.state.zoomLevel} onChange={this.handleZoom} aria-labelledby="continuous-slider" />
+                
+                <Grid container spacing={2} style={{width: '100%'}}>
+                    <Grid item>
+                        <ZoomOutIcon />
+                    </Grid>
+                    <Grid item xs>
+                        <Slider value={this.state.zoomLevel} onChange={this.handleZoom} aria-labelledby="continuous-slider" min={1} max={50}/>
+                    </Grid>
+                    <Grid item>
+                        <ZoomInIcon />
+                    </Grid>
+                </Grid>
             </div>
         )
     }

@@ -3,7 +3,6 @@ import './App.css';
 import Chart from './components/Chart';
 
 import SearchAppBar from './components/material-ui/SearchAppBar';
-import Button from '@material-ui/core/Button';
 
 
 class App extends Component {
@@ -12,9 +11,6 @@ class App extends Component {
       <div>
         <SearchAppBar />
         <Chart />
-        <Button variant="contained" color="primary">
-          Primary
-        </Button>
       </div>
     )
   }
